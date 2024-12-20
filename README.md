@@ -7,7 +7,10 @@ go build
 ```
 
 ## Template
+
 Input data to template.xlsx
+
+*** NOTE: ONLY 1 SHEET ALLOWED ***
 
 address: ontology address start with 'A'
 
