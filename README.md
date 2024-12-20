@@ -20,6 +20,10 @@ token: "ONT" or "ONG" for now
 
 
 ## Use case
+create wallet
+```
+./ont-multi-transfer --new-wallet --password 123456
+```
 
 check balance
 ```
