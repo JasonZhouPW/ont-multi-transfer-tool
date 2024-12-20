@@ -1,5 +1,21 @@
 # ont-multi-transfer
 
+## Build
+
+```
+go build
+```
+
+## Template
+Input data to template.xlsx
+
+address: ontology address start with 'A'
+
+amount: amount without decimal . for example '0.1'
+
+token: "ONT" or "ONG" for now
+
+
 ## Use case
 
 check balance
