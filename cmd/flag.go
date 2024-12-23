@@ -6,12 +6,6 @@ import (
 	"github.com/urfave/cli"
 )
 
-const (
-	DEFAULT_LOG_LEVEL           = 1
-	DEFAULT_LOG_FILE_PATH       = "./Log/"
-	DEFAULT_BLOCK_CHAIN_RPC_URL = "http://localhost:8545"
-)
-
 var (
 	PasswordFlag = cli.StringFlag{
 		Name:  "password",
