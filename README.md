@@ -39,3 +39,14 @@ send token
 ```
 ./ont-multi-transfer --operation send --excel-file ./template1.xlsx --network testnet --password 123456
 ```
+
+```
+GLOBAL OPTIONS:
+   --network value     mainnet | testnet  (default: "mainnet")
+   --new-wallet        new wallet
+   --password value    password for wallet
+   --balance           check balance
+   --operation value   send | check-excel
+   --excel-file value  excel file path
+   --help, -h          show help
+```   
