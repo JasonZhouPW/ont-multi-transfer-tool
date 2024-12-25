@@ -250,19 +250,24 @@ func extractTotalAmount(rows [][]string) (float64, float64, error) {
 	ongAmt, ontAmt := float64(0), float64(0)
 	for i, row := range rows {
 		if len(row) < 3 {
-			fmt.Printf("Row %d has less than 3 columns.\n", i+1)
-			return ongAmt, ontAmt, fmt.Errorf("invalid row format at row %d", i+1)
+			fmt.Printf("Row %d has less than 3 columns.\n", i+2)
+			return ongAmt, ontAmt, fmt.Errorf("invalid row format at row %d", i+2)
 		}
 		amt, err := strconv.ParseFloat(row[1], 64)
 		if err != nil {
-			fmt.Printf("Parse amount error at row %d: %v\n", i+1, err)
+			fmt.Printf("Parse amount error at row %d: %v\n", i+2, err)
 			return ongAmt, ontAmt, err
 
 		}
 		if strings.EqualFold(row[2], "ONG") {
 			ongAmt += amt
 		} else if strings.EqualFold(row[2], "ONT") {
+			if strings.HasPrefix(row[0], "0x") {
+				fmt.Printf("Row :%d send ONT to evm address: %s not allowed.\n", i+2, row[0])
+				return ongAmt, ontAmt, fmt.Errorf("send ONT to evm address: %s not allowed", row[0])
+			}
 			ontAmt += amt
+
 		} else {
 			fmt.Printf("Invalid token at row %d.\n", i+2)
 			return ongAmt, ontAmt, fmt.Errorf("invalid token at row %d", i+2)
@@ -340,6 +345,10 @@ func sendByToken(rows [][]string, token string, defaultAcct *ontsdk.Account, sdk
 		var states []*sdkcom.TransferStateV2
 		for j, row := range batchRows {
 			fmt.Printf("Row %d: %s %s %s\n", j+start+2, row[0], row[1], row[2])
+			if strings.EqualFold(token, "ONT") && strings.HasPrefix(row[0], "0x") {
+				fmt.Printf("send ONT to evm address: %s not allowed.\n", row[0])
+				return fmt.Errorf("send ONT to evm address: %s not allowed", row[0])
+			}
 			toAddr, err := parseToAddress(row[0])
 			if err != nil {
 				fmt.Printf("Parse to address error at row %d: %v\n", j+start+2, err)
@@ -395,7 +404,7 @@ func parseToAddress(str string) (common.Address, error) {
 			fmt.Printf("err: %s\n", err)
 			return common.Address{}, err
 		}
-		fmt.Printf("change evm address: %s - > %s\n", str, addr.ToBase58())
+		fmt.Printf("transform evm address: %s - > %s\n", str, addr.ToBase58())
 		return addr, nil
 	}
 	addr, err := common.AddressFromBase58(str)
