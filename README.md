@@ -12,7 +12,8 @@ Input data to template.xlsx
 
 *** NOTE: ONLY 1 SHEET ALLOWED ***
 
-address: ontology address start with 'A'
+address: accept Base58 format address (starts with 'A' ) and EVM address (starts with '0x')
+   EVM address only accept for ONT transfer and will be transformed to Base58 format address automatically.
 
 amount: amount without decimal . for example '0.1'
 
