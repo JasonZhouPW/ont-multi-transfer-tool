@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	sdkcom "github.com/ontio/ontology-go-sdk/common"
 	"github.com/ontio/ontology/common"
 
@@ -339,7 +340,7 @@ func sendByToken(rows [][]string, token string, defaultAcct *ontsdk.Account, sdk
 		var states []*sdkcom.TransferStateV2
 		for j, row := range batchRows {
 			fmt.Printf("Row %d: %s %s %s\n", j+start+2, row[0], row[1], row[2])
-			toAddr, err := common.AddressFromBase58(row[0])
+			toAddr, err := parseToAddress(row[0])
 			if err != nil {
 				fmt.Printf("Parse to address error at row %d: %v\n", j+start+2, err)
 				return err
@@ -380,6 +381,29 @@ func sendByToken(rows [][]string, token string, defaultAcct *ontsdk.Account, sdk
 		}
 	}
 	return nil
+}
+
+func parseToAddress(str string) (common.Address, error) {
+	if strings.HasPrefix(str, "0x") {
+		bts, err := hexutil.Decode(str)
+		if err != nil {
+			fmt.Printf("err: %s\n", err)
+			return common.Address{}, err
+		}
+		addr, err := common.AddressParseFromBytes(bts)
+		if err != nil {
+			fmt.Printf("err: %s\n", err)
+			return common.Address{}, err
+		}
+		fmt.Printf("change evm address: %s - > %s\n", str, addr.ToBase58())
+		return addr, nil
+	}
+	addr, err := common.AddressFromBase58(str)
+	if err != nil {
+		fmt.Printf("Parse to address error: %v\n", err)
+		return common.Address{}, err
+	}
+	return addr, nil
 }
 
 func ToStringByPrecise(bigNum *big.Int, precise uint64) string {
